@@ -1,0 +1,25 @@
+def main():
+	materials = {
+    "steel": {
+        "Yield Strength": 250,
+        "Young's Modulus": 200
+    },
+    "aluminum": {
+        "Yield Strength": 95,
+        "Young's Modulus": 69
+    },
+    "titanium": {
+        "Yield Strength": 880,
+        "Young's Modulus": 116
+    }
+}
+	while True:
+        try:
+            material = select_material(materials)
+            
+            input_handling(force, area, original_len, change_len)
+            break
+
+        except ValueError as e:
+            print(f"Invalid input: {e}")
+            print("Please enter a valid number.")
