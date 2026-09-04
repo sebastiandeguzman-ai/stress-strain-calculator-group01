@@ -114,3 +114,33 @@ class StressStrainTest:
     @property
     def factor_of_safety(self) -> float:
         return self.material.yield_strength / self.stress
+    
+from material import Material, StressStrainTest
+from database import add_to_history
+from utils import validate_positive_number, prompt_material_selection
+
+def main() -> None:
+    materials = [
+        {"name": "Structural Steel", "yield_strength": 250e6},
+        {"name": "Aluminum 6061-T6", "yield_strength": 276e6}
+    ]
+    history = []
+    
+    selected = prompt_material_selection(materials)
+    mat = Material(selected["name"], selected["yield_strength"])
+    
+    f = validate_positive_number("Enter Force (N): ", "Force")
+    a = validate_positive_number("Enter Area (m^2): ", "Area")
+    l0 = validate_positive_number("Enter Length (m): ", "Length")
+    dl = validate_positive_number("Enter Delta L (m): ", "Delta L")
+    
+    test = StressStrainTest(mat, f, a, l0, dl)
+    record = {
+        "material": test.material.name,
+        "stress": test.stress,
+        "strain": test.strain,
+        "modulus": test.youngs_modulus,
+        "fos": test.factor_of_safety
+    }
+    add_to_history(history, record)
+
