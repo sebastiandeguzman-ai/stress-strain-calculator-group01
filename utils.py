@@ -166,3 +166,32 @@ def perform_safety_analysis(stress_mpa, selected_material_properties):
     # TODO: Handle zero or compressive stress
     else:
         print("SAFE - No tensile stress, or negligible stress.")
+
+class Utils:
+  def __init__(self):
+    force = float(input("Enter applied force(in Newtons): ").replace(",", ""))
+    area = float(input("Enter cross-sectional area(in square meters): ").replace(",", ""))
+    original_len = float(input("Enter length(in m): ").replace(",", ""))
+    change_len = float(input("Enter change in length(in m): ").replace(",", ""))
+    
+  def calculate_stress_strain(self, force, area, original_len, change_len):
+    stress = force / area
+    strain = change_len / original_len
+
+    print("=== RESULTS ===")
+    # TODO: Print each input value with appropriate formatting
+    print(f"Applied Force: {force:.2f} N")
+    print(f"Cross-Sectional Area: {area:.2f} m^2")
+    print(f"Original Length: {original_len:.2f} m")
+    print(f"Change in Length: {change_len:.2f} m")
+
+    # TODO: Display the calculated results
+    print("Stress & Strain results")
+    # TODO: Print stress with 2 decimal places and units (Pa)
+    print(f"Stress: {stress:.2f} Pa")
+    # TODO: Print strain with 6 decimal places
+    print(f"Strain: {strain:.6f}")
+
+  def conversion (stress):
+    stress_mpa = stress / 1_000_000
+    print(f"Stress in MPa: {stress_mpa:.2f} MPa")
