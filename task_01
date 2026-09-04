@@ -10,3 +10,11 @@ def main():
 
     stress = force / area
     strain = change_len / original_len
+
+    print()
+    print("=== RESULTS ===")
+
+    print(f"Applied Force: {force:.2f} N")
+    print(f"Cross-Sectional Area: {area:.2f} m^2")
+    print(f"Original Length: {original_len:.2f} m")
+    print(f"Change in Length: {change_len:.2f} m")
