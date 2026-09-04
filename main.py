@@ -62,3 +62,18 @@ def get_positive_float(prompt: str) -> float:
         except ValueError:
             print("Error: Please enter a valid numerical value.")
 
+def handle_history_and_export(choice: str, test_history: list):
+    """Processes session history listing and CSV data export options."""
+    if choice == "3":
+        if not test_history:
+            print("\nNo test results recorded yet.")
+        else:
+            print(f"\n=== CALCULATION HISTORY ({len(test_history)} tests) ===")
+            for idx, t in enumerate(test_history, start=1):
+                print(f"{idx}. {t}")
+
+    elif choice == "6":
+        export_results_csv(test_history)
+        print("\nData successfully exported to data/results.csv")
+
+
