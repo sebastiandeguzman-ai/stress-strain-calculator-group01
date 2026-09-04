@@ -88,3 +88,29 @@ class Material:
 
     def is_safe(self, applied_stress: float) -> bool:
         return applied_stress < self.yield_strength
+
+from dataclasses import dataclass
+
+@dataclass
+class StressStrainTest:
+    material: Material
+    force: float
+    area: float
+    original_length: float
+    change_in_length: float
+
+    @property
+    def stress(self) -> float:
+        return self.force / self.area
+
+    @property
+    def strain(self) -> float:
+        return self.change_in_length / self.original_length
+
+    @property
+    def youngs_modulus(self) -> float:
+        return self.stress / self.strain if self.strain > 0 else 0.0
+
+    @property
+    def factor_of_safety(self) -> float:
+        return self.material.yield_strength / self.stress
