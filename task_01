@@ -18,3 +18,12 @@ def main():
     print(f"Cross-Sectional Area: {area:.2f} m^2")
     print(f"Original Length: {original_len:.2f} m")
     print(f"Change in Length: {change_len:.2f} m")
+
+    print()
+
+    print("Stress & Strain results")
+    # TODO: Print stress with 2 decimal places and units (Pa)
+    print(f"Stress: {stress:.2f} Pa")
+    # TODO: Print strain with 6 decimal places (no units - it's dimensionless)
+    print(f"Strain: {strain:.6f}")
+    print()
