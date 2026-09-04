@@ -34,3 +34,14 @@ def prompt_material_selection(materials: list[dict]) -> dict:
             print("Selection out of range. Try again.")
         except ValueError:
             print("Invalid input. Please enter a number.")
+
+def validate_positive_number(prompt_text: str, param_name: str) -> float:
+    while True:
+        try:
+            val = float(input(prompt_text))
+            if val <= 0:
+                print(f"Error: {param_name} must be greater than zero.")
+                continue
+            return val
+        except ValueError:
+            print("Error: Invalid numeric input. Please try again.")
