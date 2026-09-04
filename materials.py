@@ -144,3 +144,15 @@ def main() -> None:
     }
     add_to_history(history, record)
 
+import json
+from pathlib import Path
+
+def save_history_to_json(history: list[dict], filepath: str = "history.json") -> None:
+    Path(filepath).write_text(json.dumps(history, indent=4))
+
+
+def load_history_from_json(filepath: str = "history.json") -> list[dict]:
+    path = Path(filepath)
+    if not path.exists():
+        return []
+    return json.loads(path.read_text())
