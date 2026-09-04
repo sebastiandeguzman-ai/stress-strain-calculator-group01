@@ -1,16 +1,11 @@
 from dataclasses import dataclass
 from typing import List
 
-# =====================================================================
-# SECTION 1: PROCEDURAL IMPLEMENTATION
-# =====================================================================
-
 def procedural_main():
     test_history = []
     unique_materials = set()
     UNITS = ("N", "m²", "m", "Pa")
-    
-    # Updated database: steel, plastic, composite (values in Pa)
+   
     materials_indx = {
         "steel": {"yield_strength": 250000000, "youngs_modulus": 200000000000},
         "plastic": {"yield_strength": 70000000, "youngs_modulus": 2800000000},
@@ -107,7 +102,7 @@ def procedural_main():
     print("___")
 
 
-#6
+# task 6
 
 @dataclass
 class MaterialProperties:
@@ -143,7 +138,6 @@ class StressStrainTest:
         return not self.material.can_withstand_stress(self.stress)
 
 def oop_main():
-    # Updated database: steel, plastic, composite
     materials_db = {
         "steel": Material("Steel", MaterialProperties(7850, 250000000, 200000000000)),
         "plastic": Material("Plastic", MaterialProperties(1150, 70000000, 2800000000)),
