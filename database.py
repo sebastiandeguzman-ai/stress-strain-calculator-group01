@@ -1,7 +1,5 @@
 # Key additions:
 def main():
-    print("=== Stress and Strain Calculator - Session Manager ===")
-    print("  ")
 
     # Key additions:
     test_history = []
@@ -24,7 +22,7 @@ def main():
         if material_inp not in materials_indx:
             print("Error: Material not found in database")
             continue
-        try
+        try:
             force = float(input(f"Enter force ({UNITS[0]}): "))
             area = float(input(f"Enter area ({UNITS[1]}): "))
             original_length = float(input(f"Enter original length ({UNITS[2]}): "))
@@ -45,7 +43,7 @@ def main():
         if safety_factor >= 1.0:
             safety_status = f"SAFE (SF: {round(safety_factor, 2)})"
         else:
-            afety_status = f"UNSAFE (SF: {round(safety_factor, 2)})"
+            safety_status = f"UNSAFE (SF: {round(safety_factor, 2)})"
 
         index_ = {
             "material": material_inp.capitalize(),
