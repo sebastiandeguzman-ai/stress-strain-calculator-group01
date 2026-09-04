@@ -47,3 +47,11 @@ index_ = {
 }
 test_history.append(index_)
 unique_materials.add(material_inp.capitalize())
+
+# Key additions:
+print("Total calculations:", len(test_history))
+print("Unique materials tested:", unique_materials)
+
+if len(test_history) > 0:
+    for idx, item in enumerate(test_history, start=1):
+        print(f"Test #{idx}: {item['material']} | Stress: {round(item['stress'], 2)} {UNITS[3]} | Result: {item['safety result']}")
