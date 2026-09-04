@@ -160,7 +160,7 @@ def perform_safety_analysis(stress_mpa, selected_material_properties):
         # TODO: Warn the user if stress exceeds the yield strength
         else:
             print(
-                f"UNSAFE - Factor of Safety: {factor_of_safety:.2f}"
+                f"CAUTION - Factor of Safety: {factor_of_safety:.2f}"
             )
 
     # TODO: Handle zero or compressive stress
