@@ -22,8 +22,21 @@ def main():
     print()
 
     print("Stress & Strain results")
-    # TODO: Print stress with 2 decimal places and units (Pa)
     print(f"Stress: {stress:.2f} Pa")
-    # TODO: Print strain with 6 decimal places (no units - it's dimensionless)
     print(f"Strain: {strain:.6f}")
     print()
+
+    stress_mpa = stress / 1_000_000
+    print(f"Stress in MPa: {stress_mpa:.2f} MPa")
+    if change_len > 0:
+        print("Loading Type: Tension")
+    elif change_len < 0:
+        print("Loading Type: Compression")
+    else:
+        print("Loading Type: Neither (No change in length)")
+
+    print()
+    print("=== Analysis Complete ===")
+
+if __name__ == "__main__":
+    main()
