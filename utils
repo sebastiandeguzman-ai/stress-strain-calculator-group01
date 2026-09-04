@@ -128,3 +128,41 @@ def input_handling(force, area, original_len, change_len):
 
     # TODO: Check if change in length is valid
     # Negative change in length is allowed because it represents compression
+
+def perform_safety_analysis(stress_mpa, selected_material_properties):
+    """Performs safety analysis based on stress and material yield strength."""
+
+    # TODO: Compare the calculated stress with the material's yield strength
+    # TODO: Calculate the factor of safety
+    # TODO: Determine whether the material is safe or likely to fail
+
+    safety_margin_factor = 0.9
+
+    if stress_mpa > 0:
+
+        # TODO: Calculate factor of safety
+        factor_of_safety = (
+            selected_material_properties["Yield Strength"] / stress_mpa
+        )
+
+        # TODO: Determine if the stress is safely below the yield strength
+        if stress_mpa < selected_material_properties["Yield Strength"] * safety_margin_factor:
+            print(
+                f"SAFE - Factor of Safety: {factor_of_safety:.2f}"
+            )
+
+        # TODO: Handle stress that is close to the yield strength
+        elif stress_mpa < selected_material_properties["Yield Strength"]:
+            print(
+                f"CAUTION - Factor of Safety: {factor_of_safety:.2f}"
+            )
+
+        # TODO: Warn the user if stress exceeds the yield strength
+        else:
+            print(
+                f"UNSAFE - Factor of Safety: {factor_of_safety:.2f}"
+            )
+
+    # TODO: Handle zero or compressive stress
+    else:
+        print("SAFE - No tensile stress, or negligible stress.")
