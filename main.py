@@ -35,4 +35,30 @@ def run_new_test(materials_db: dict, test_history: list):
     except Exception as e:
         print(f"Error running test: {e}")
 
+def display_menu():
+    """Displays the main application user interface menu."""
+    print("\n" + "=" * 45)
+    print(" STRESS & STRAIN ANALYSIS SYSTEM")
+    print("=" * 45)
+    print("1. Run New Mechanical Test")
+    print("2. Generate Simulated Test Data")
+    print("3. View Session Calculation History")
+    print("4. Save Results (JSON)")
+    print("5. Load Saved Results (JSON)")
+    print("6. Export Test Data (CSV)")
+    print("7. Exit")
+    print("-" * 45)
+
+
+def get_positive_float(prompt: str) -> float:
+    """Validates user numerical inputs to prevent non-numeric or zero/negative entry errors."""
+    while True:
+        try:
+            val = float(input(prompt).replace(",", ""))
+            if val <= 0:
+                print("Error: Input must be strictly greater than 0.")
+                continue
+            return val
+        except ValueError:
+            print("Error: Please enter a valid numerical value.")
 
