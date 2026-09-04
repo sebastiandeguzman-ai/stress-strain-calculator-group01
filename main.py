@@ -76,4 +76,20 @@ def handle_history_and_export(choice: str, test_history: list):
         export_results_csv(test_history)
         print("\nData successfully exported to data/results.csv")
 
+def run_simulated_test(materials_db: dict, test_history: list):
+    """Uses utility simulation generator to create randomized test data."""
+    print("\nSelect Material for Simulation:")
+    for key in materials_db:
+        print(f"- {key.capitalize()}")
+
+    mat_choice = input("Select Material: ").strip().lower()
+    if mat_choice in materials_db:
+        mat = materials_db[mat_choice]
+        f, a, l, dl = generate_simulated_test(mat.properties.yield_strength)
+        test = StressStrainTest(mat, f, a, l, dl)
+        test_history.append(test)
+        print(f"\nSimulated test generated for {mat.name}:")
+        print(test)
+    else:
+        print("Invalid material choice.")
 
