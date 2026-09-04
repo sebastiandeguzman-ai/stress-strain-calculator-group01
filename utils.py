@@ -169,12 +169,28 @@ def perform_safety_analysis(stress_mpa, selected_material_properties):
 
 class Utils:
   def __init__(self):
-    force = float(input("Enter applied force(in Newtons): ").replace(",", ""))
-    area = float(input("Enter cross-sectional area(in square meters): ").replace(",", ""))
-    original_len = float(input("Enter length(in m): ").replace(",", ""))
-    change_len = float(input("Enter change in length(in m): ").replace(",", ""))
-    
-  def calculate_stress_strain(self, force, area, original_len, change_len):
+    self.force = float(input("Enter applied force(in Newtons): ").replace(",", ""))
+    self.area = float(input("Enter cross-sectional area(in square meters): ").replace(",", ""))
+    self.original_len = float(input("Enter length(in m): ").replace(",", ""))
+    self.change_len = float(input("Enter change in length(in m): ").replace(",", ""))
+
+  def calculate_stress_strain(self):
+    stress = self.force / self.area
+    strain = self.change_len / self.original_len
+
+    print("=== RESULTS ===")
+    # TODO: Print each input value with appropriate formatting
+    print(f"Applied Force: {self.force:.2f} N")
+    print(f"Cross-Sectional Area: {self.area:.2f} m^2")
+    print(f"Original Length: {self.original_len:.2f} m")
+    print(f"Change in Length: {self.change_len:.2f} m")
+
+    # TODO: Display the calculated results
+    print("Stress & Strain results")
+    # TODO: Print stress with 2 decimal places and units (Pa)
+    print(f"Stress: {stress:.2f} Pa")
+    # TODO: Print strain with 6 decimal places
+    print(f"Strain: {strain:.6f}")
     stress = force / area
     strain = change_len / original_len
 
