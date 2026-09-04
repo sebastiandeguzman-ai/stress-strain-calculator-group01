@@ -1,19 +1,19 @@
 def main():
-	materials = {
-    "steel": {
-        "Yield Strength": 250,
-        "Young's Modulus": 200
-    },
-    "aluminum": {
-        "Yield Strength": 95,
-        "Young's Modulus": 69
-    },
-    "titanium": {
-        "Yield Strength": 880,
-        "Young's Modulus": 116
+    materials = {
+        "steel": {
+            "Yield Strength": 250,
+            "Young's Modulus": 200
+        },
+        "aluminum": {
+            "Yield Strength": 95,
+            "Young's Modulus": 69
+        },
+        "titanium": {
+            "Yield Strength": 880,
+            "Young's Modulus": 116
+        }
     }
-}
-	while True:
+    while True:
         try:
             material = select_material(materials)
             

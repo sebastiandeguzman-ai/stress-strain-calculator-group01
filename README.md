@@ -10,7 +10,7 @@ Vennice Anne Cartera	Task 2 – Control Structures
 
 Darylle Balbin	Task 3 – Data Structures
 
-Sebastian Miguel De Guzman Task 4 – Functions
+Sebastian Miguel De Guzman   Task 4 – Functions
 
 Rhianne Granados Task 5 – OOP
 
