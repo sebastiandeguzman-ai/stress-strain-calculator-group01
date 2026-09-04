@@ -229,3 +229,120 @@ class TestAnalysis:
                 f"Yield Strength: "
                 f"{strongest.properties.yield_strength:.2f} MPa")
             print("-" * 35)
+
+# Material Properties
+steel_properties = MaterialProperties(
+    density=7850,
+    yield_strength=250,
+    typical_youngs_modulus=200)
+
+aluminum_properties = MaterialProperties(
+    density=2700,
+    yield_strength=276,
+    typical_youngs_modulus=69)
+
+nylon_properties = MaterialProperties(
+    density=1150,
+    yield_strength=70,
+    typical_youngs_modulus=2.8)
+
+carbon_fiber_properties = MaterialProperties(
+    density=1600,
+    yield_strength=600,
+    typical_youngs_modulus=70)
+
+# Material Objects
+steel = Metal(
+    "Steel",
+    steel_properties,
+    is_ferrous=True)
+
+aluminum = Metal(
+    "Aluminum",
+    aluminum_properties,
+    is_ferrous=False)
+
+nylon = Plastic(
+    "Nylon",
+    nylon_properties,
+    is_flexible=True)
+
+carbon_fiber = Composite(
+    "Carbon Fiber",
+    carbon_fiber_properties,
+    is_reinforced=True)
+
+# Tests
+steel_test = StressStrainTest(
+    steel,
+    force=5000,
+    area=25,
+    original_length=100,
+    change_in_length=0.5)
+
+aluminum_test = StressStrainTest(
+    aluminum,
+    force=6000,
+    area=25,
+    original_length=100,
+    change_in_length=0.8)
+
+nylon_test = StressStrainTest(
+    nylon,
+    force=2000,
+    area=25,
+    original_length=100,
+    change_in_length=2)
+
+carbon_fiber_test = StressStrainTest(
+    carbon_fiber,
+    force=10000,
+    area=25,
+    original_length=100,
+    change_in_length=0.3)
+
+analysis = TestAnalysis()
+analysis.add_test(steel_test)
+analysis.add_test(aluminum_test)
+analysis.add_test(nylon_test)
+analysis.add_test(carbon_fiber_test)
+
+
+print("===== MATERIALS =====")
+print(steel)
+print(aluminum)
+print(nylon)
+print(carbon_fiber)
+
+print("\n----- INDIVIDUAL TEST -----")
+print(steel_test)
+
+print(
+    f"Will the material fail? "
+    f"{'Yes' if steel_test.will_fail() else 'No'}")
+
+print(
+    f"Calculated Young's modulus: "
+    f"{steel_test.youngs_modulus:.2f} GPa")
+
+print(
+    f"Typical Young's modulus: "
+    f"{steel.properties.typical_youngs_modulus:.2f} GPa")
+
+analysis.compare_materials()
+analysis.summary_report()
+
+same_steel = Metal(
+    "Steel",
+    MaterialProperties(
+        density=7850,
+        yield_strength=250,
+        typical_youngs_modulus=200
+    ),
+    is_ferrous=True)
+
+print("\n======= OBJECT COMPARISON =======")
+
+print(
+    f"Are the steel objects equal? "
+    f"{steel == same_steel}")
