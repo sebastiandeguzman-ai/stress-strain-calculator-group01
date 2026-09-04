@@ -86,3 +86,57 @@ class StressStrainTest:
             f"Stress={self.stress:.2f} MPa, "
             f"Strain={self.strain:.6f}, "
             f"Young's Modulus={modulus}")
+
+class Metal(Material):
+    def __init__(
+        self,
+        name: str,
+        properties: MaterialProperties,
+        is_ferrous: bool = False):
+        super().__init__(name, properties)
+        self.is_ferrous = is_ferrous
+
+    def __str__(self) -> str:
+        metal_type = (
+            "Ferrous" if self.is_ferrous else "Non-ferrous")
+        return (
+            f"{self.name} "
+            f"({metal_type} metal, "
+            f"Density: {self.properties.density} kg/m³)")
+
+class Plastic(Material):
+    def __init__(
+        self,
+        name: str,
+        properties: MaterialProperties,
+        is_flexible: bool = False):
+        super().__init__(name, properties)
+        self.is_flexible = is_flexible
+
+    def __str__(self) -> str:
+        plastic_type = (
+            "Flexible" if self.is_flexible else "Rigid")
+        return (
+            f"{self.name} "
+            f"({plastic_type} plastic, "
+            f"Density: {self.properties.density} kg/m³)")
+
+class Composite(Material):
+    def __init__(
+        self,
+        name: str,
+        properties: MaterialProperties,
+        is_reinforced: bool = True):
+        super().__init__(name, properties)
+        self.is_reinforced = is_reinforced
+
+    def __str__(self) -> str:
+        composite_type = (
+            "Reinforced"
+            if self.is_reinforced
+            else "Non-reinforced")
+
+        return (
+            f"{self.name} "
+            f"({composite_type} composite, "
+            f"Density: {self.properties.density} kg/m³)")
