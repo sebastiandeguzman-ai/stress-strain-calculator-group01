@@ -31,3 +31,80 @@ def main():
         main()
     else:
         print("Goodbye!")
+
+def select_material(materials):
+    """Handles material selection from predefined options or custom input."""
+
+    # TODO: Create a loop so the user can select a valid material
+    while True:
+
+        # TODO: Display the available materials
+        print("\nAvailable Materials:")
+
+        # TODO: Display each material from the materials dictionary
+        for mat_name in materials.keys():
+            print(f"- {mat_name.capitalize()}")
+
+        # TODO: Add an option for a custom material
+        print("- Custom Material")
+
+        # TODO: Get the user's material choice
+        material_choice = input(
+            "Enter your material choice: "
+        ).lower().strip()
+
+        # TODO: Check if the user's choice is one of the built-in materials
+        if material_choice in materials:
+
+            # TODO: Display the selected material
+            print(f"Selected material: {material_choice.capitalize()}")
+
+            # TODO: Return the properties of the selected material
+            return materials[material_choice]
+
+        # TODO: Handle custom material selection
+        elif material_choice == "custom":
+
+            # TODO: Use try-except to handle non-numeric values
+            try:
+
+                # TODO: Ask for the custom material's yield strength
+                custom_yield_strength = float(
+                    input("Enter the Custom Yield Strength (MPa): ")
+                )
+
+                # TODO: Ask for the custom material's Young's modulus
+                custom_young_modulus = float(
+                    input("Enter the Custom Young's Modulus (GPa): ")
+                )
+
+                # TODO: Validate that the custom properties are positive
+                if custom_yield_strength <= 0:
+                    raise ValueError(
+                        "Yield strength must be greater than 0."
+                    )
+
+                if custom_young_modulus <= 0:
+                    raise ValueError(
+                        "Young's modulus must be greater than 0."
+                    )
+
+                # TODO: Display confirmation of the selected custom material
+                print("Selected custom material properties.")
+
+                # TODO: Return the custom material properties
+                return {
+                    "Yield Strength": custom_yield_strength,
+                    "Young's Modulus": custom_young_modulus
+                }
+
+            # TODO: Handle invalid numeric input
+            except ValueError as e:
+                print(f"Invalid input: {e}")
+
+        # TODO: Handle invalid material choices
+        else:
+            print(
+                "Invalid material choice. "
+                "Please select from the list or 'Custom Material'."
+            )
