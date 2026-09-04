@@ -55,3 +55,13 @@ print("Unique materials tested:", unique_materials)
 if len(test_history) > 0:
     for idx, item in enumerate(test_history, start=1):
         print(f"Test #{idx}: {item['material']} | Stress: {round(item['stress'], 2)} {UNITS[3]} | Result: {item['safety result']}")
+
+        # Key additions:
+highest_stress = max(item["stress"] for item in test_history)
+lowest_sf = min(item["safety_factor_raw"] for item in test_history)
+avg_strain = sum(item["strain"] for item in test_history) / len(test_history)
+
+mat_counts = {}
+for item in test_history:
+    mat = item["material"]
+    mat_counts[mat] = mat_counts.get(mat, 0) + 1
