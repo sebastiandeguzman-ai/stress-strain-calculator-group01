@@ -14,3 +14,23 @@ def calculate_youngs_modulus(stress: float, strain: float) -> float:
 
 def calculate_factor_of_safety(yield_strength: float, working_stress: float) -> float:
     return yield_strength / working_stress
+
+def display_material_menu(materials: list[dict]) -> None:
+    print("\n" + "=" * 40)
+    print(" AVAILABLE MATERIAL LIBRARY ")
+    print("=" * 40)
+    for idx, mat in enumerate(materials, 1):
+        ys_mpa = mat["yield_strength"] / 1e6
+        print(f"{idx}. {mat['name']} (Yield Strength: {ys_mpa:.1f} MPa)")
+
+
+def prompt_material_selection(materials: list[dict]) -> dict:
+    display_material_menu(materials)
+    while True:
+        try:
+            choice = int(input("\nSelect a material number: "))
+            if 1 <= choice <= len(materials):
+                return materials[choice - 1]
+            print("Selection out of range. Try again.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
