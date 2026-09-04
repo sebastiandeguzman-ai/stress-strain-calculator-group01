@@ -62,3 +62,16 @@ def add_to_history(history: list[dict], record: dict) -> None:
 
 def get_history(history: list[dict]) -> list[dict]:
     return history
+
+def compute_all_properties(force: float, area: float, orig_len: float, dl: float, yield_strength: float) -> dict:
+    stress = calculate_stress(force, area)
+    strain = calculate_strain(dl, orig_len)
+    modulus = calculate_youngs_modulus(stress, strain)
+    fos = calculate_factor_of_safety(yield_strength, stress)
+    
+    return {
+        "stress": stress,
+        "strain": strain,
+        "modulus": modulus,
+        "fos": fos
+    }
