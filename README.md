@@ -6,13 +6,13 @@ Member	Primary Responsibility
 
 Mary Charlize Fetalcorin	Task 1 – Basic Calculations
 
-Vennice Anne Cartera	Task 2 – Control Structures
+Venice Anne Cartera	Task 2 – Control Structures
 
 Darylle Balbin	Task 3 – Data Structures
 
 Sebastian Miguel De Guzman   Task 4 – Functions
 
-Rhianne Granados Task 5 – OOP
+Rhianne Adreana Granados Task 5 – OOP
 
 Task 6 – Modular Integration was completed collaboratively by all members.
 
