@@ -75,3 +75,16 @@ def compute_all_properties(force: float, area: float, orig_len: float, dl: float
         "modulus": modulus,
         "fos": fos
     }
+
+from dataclasses import dataclass
+
+@dataclass
+class Material:
+    name: str
+    yield_strength: float
+
+    def get_yield_strength_mpa(self) -> float:
+        return self.yield_strength / 1e6
+
+    def is_safe(self, applied_stress: float) -> bool:
+        return applied_stress < self.yield_strength
