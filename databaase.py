@@ -25,3 +25,25 @@ while True:
     if force <= 0 or area <= 0 or original_length <= 0 or change_in_length <= 0:
         print("Error: All dimensions and forces must be positive numbers!")
         continue
+
+    # Key additions:
+stress = force / area
+strain = change_in_length / original_length
+
+safety_factor = yield_stren / stress
+safety_status = f"SAFE (SF: {round(safety_factor, 2)})" if safety_factor >= 1.0 else f"UNSAFE (SF: {round(safety_factor, 2)})"
+
+index_ = {
+    "material": material_inp.capitalize(),
+    "force": force,
+    "area": area,
+    "original length": original_length,
+    "change in length": change_in_length,
+    "stress": stress,
+    "strain": strain,
+    "Young's modulus": ym_,
+    "safety result": safety_status,
+    "safety_factor_raw": safety_factor
+}
+test_history.append(index_)
+unique_materials.add(material_inp.capitalize())
