@@ -8,7 +8,7 @@ Mary Charlize Fetalcorin	Task 1 – Basic Calculations
 
 Venice Anne Cartera	Task 2 – Control Structures
 
-Darylle Balbin	Task 3 – Data Structures
+Darylle Vyn Marie Balbin	Task 3 – Data Structures
 
 Sebastian Miguel De Guzman   Task 4 – Functions
 
