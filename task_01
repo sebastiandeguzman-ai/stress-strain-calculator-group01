@@ -7,3 +7,6 @@ def main():
     area = float(input("Enter cross-sectional area(in square meters): ").replace(",", ""))
     original_len = float(input("Enter length(in m): ").replace(",", ""))
     change_len = float(input("Enter change in length(in m): ").replace(",", ""))
+
+    stress = force / area
+    strain = change_len / original_len
