@@ -108,3 +108,23 @@ def select_material(materials):
                 "Invalid material choice. "
                 "Please select from the list or 'Custom Material'."
             )
+def input_handling(force, area, original_len, change_len):
+    """Validates the user input values."""
+
+    # TODO: Check if the force is a valid value
+    # Force can be positive or negative depending on loading direction
+
+    # TODO: Check if the cross-sectional area is greater than zero
+    if area <= 0:
+        raise ValueError(
+            "Cross-sectional area must be greater than 0."
+        )
+
+    # TODO: Check if the original length is greater than zero
+    if original_len <= 0:
+        raise ValueError(
+            "Original length must be greater than 0."
+        )
+
+    # TODO: Check if change in length is valid
+    # Negative change in length is allowed because it represents compression
