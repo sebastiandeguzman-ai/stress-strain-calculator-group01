@@ -1,158 +1,139 @@
+from dataclasses import dataclass
+from properties import MaterialProperties
+
+
+class Material:
+    """Base class representing a general material."""
+
+    def __init__(self, name: str, properties: MaterialProperties):
+        self.name = name
+        self.properties = properties
+
+    def __str__(self) -> str:
+        return f"{self.name} (Density: {self.properties.density} kg/m³)"
+
+    def can_withstand_stress(self, stress_pa: float) -> bool:
+        """Check if material can withstand a given stress without yielding."""
+        if stress_pa < 0:
+            raise ValueError("Stress cannot be negative.")
+        return stress_pa < self.properties.yield_strength
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Material):
+            return NotImplemented
+        return self.name == other.name and self.properties == other.properties
+
+class Metal(Material):
+    """Subclass representing metallic materials."""
+
+    def __init__(self, name: str, properties: MaterialProperties, is_ferrous: bool = False):
+        super().__init__(name, properties)
+        self.is_ferrous = is_ferrous
+
+    def __str__(self) -> str:
+        metal_type = "Ferrous" if self.is_ferrous else "Non-ferrous"
+        return f"{self.name} ({metal_type} metal, Density: {self.properties.density} kg/m³)"
+
+class Plastic(Material):
+    """Subclass representing polymer/plastic materials."""
+
+    def __init__(self, name: str, properties: MaterialProperties, is_flexible: bool = False):
+        super().__init__(name, properties)
+        self.is_flexible = is_flexible
+
+    def __str__(self) -> str:
+        plastic_type = "Flexible" if self.is_flexible else "Rigid"
+        return f"{self.name} ({plastic_type} plastic, Density: {self.properties.density} kg/m³)"
+
+class Composite(Material):
+    """Subclass representing composite materials."""
+
+    def __init__(self, name: str, properties: MaterialProperties, is_reinforced: bool = True):
+        super().__init__(name, properties)
+        self.is_reinforced = is_reinforced
+
+    def __str__(self) -> str:
+        composite_type = "Reinforced" if self.is_reinforced else "Non-reinforced"
+        return f"{self.name} ({composite_type} composite, Density: {self.properties.density} kg/m³)"
+
+
+def validate_input(force: float, area: float, original_length: float, change_in_length: float) -> bool:
+    """Validate that all engineering inputs are positive non-zero numbers."""
+    if not all(
+        isinstance(v, (int, float)) and not isinstance(v, bool)
+        for v in (force, area, original_length, change_in_length)
+    ):
+        raise TypeError("All numeric inputs must be floats or integers.")
+
+    if force <= 0:
+        raise ValueError("Force must be greater than zero.")
+    if area <= 0:
+        raise ValueError("Area must be greater than zero.")
+    if original_length <= 0:
+        raise ValueError("Original length must be greater than zero.")
+    if change_in_length <= 0:
+        raise ValueError("Change in length must be greater than zero.")
+
+    return True
+
+
 def calculate_stress(force: float, area: float) -> float:
+    """Calculate tensile/compressive stress in Pascals (N/m²)."""
+    if area == 0:
+        raise ZeroDivisionError("Area cannot be zero.")
     return force / area
 
-
-def calculate_strain(change_in_length: float, original_length: float) -> float:
+def calculate_strain(original_length: float, change_in_length: float) -> float:
+    """Calculate dimensionless strain (change in length / original length)."""
+    if original_length == 0:
+        raise ZeroDivisionError("Original length cannot be zero.")
     return change_in_length / original_length
 
-
 def calculate_youngs_modulus(stress: float, strain: float) -> float:
+    """Calculate Young's Modulus in Pascals (stress / strain)."""
     if strain == 0:
-        return 0.0
+        raise ZeroDivisionError("Strain cannot be zero when calculating Young's modulus.")
     return stress / strain
 
-
 def calculate_factor_of_safety(yield_strength: float, working_stress: float) -> float:
+    """Calculate factor of safety (yield strength / working stress)."""
+    if working_stress == 0:
+        raise ZeroDivisionError("Working stress cannot be zero.")
     return yield_strength / working_stress
 
-def display_material_menu(materials: list[dict]) -> None:
-    print("\n" + "=" * 40)
-    print(" AVAILABLE MATERIAL LIBRARY ")
-    print("=" * 40)
-    for idx, mat in enumerate(materials, 1):
-        ys_mpa = mat["yield_strength"] / 1e6
-        print(f"{idx}. {mat['name']} (Yield Strength: {ys_mpa:.1f} MPa)")
+def main_calculator(material: Material, force: float, area: float, original_length: float, change_in_length: float) -> dict:
+    """Orchestrate input validation, mechanical calculations, and record creation."""
+    try:
+        validate_input(force, area, original_length, change_in_length)
 
+        stress = calculate_stress(force, area)
+        strain = calculate_strain(original_length, change_in_length)
+        youngs_modulus = calculate_youngs_modulus(stress, strain)
 
-def prompt_material_selection(materials: list[dict]) -> dict:
-    display_material_menu(materials)
-    while True:
-        try:
-            choice = int(input("\nSelect a material number: "))
-            if 1 <= choice <= len(materials):
-                return materials[choice - 1]
-            print("Selection out of range. Try again.")
-        except ValueError:
-            print("Invalid input. Please enter a number.")
+        yield_strength = getattr(
+            material, "yield_strength", None
+        ) or getattr(getattr(material, "properties", None), "yield_strength", None)
 
-def validate_positive_number(prompt_text: str, param_name: str) -> float:
-    while True:
-        try:
-            val = float(input(prompt_text))
-            if val <= 0:
-                print(f"Error: {param_name} must be greater than zero.")
-                continue
-            return val
-        except ValueError:
-            print("Error: Invalid numeric input. Please try again.")
+        factor_of_safety = None
+        is_safe = None
 
-def create_analysis_record(material_name: str, stress: float, strain: float, modulus: float, fos: float) -> dict:
-    return {
-        "material": material_name,
-        "stress_pa": stress,
-        "strain": strain,
-        "youngs_modulus_pa": modulus,
-        "factor_of_safety": fos
-    }
+        if yield_strength is not None and yield_strength > 0:
+            factor_of_safety = calculate_factor_of_safety(yield_strength, stress)
+            is_safe = material.can_withstand_stress(stress) if hasattr(material, "can_withstand_stress") else (stress < yield_strength)
 
+        return {
+            "material": getattr(material, "name", str(material)),
+            "force_n": force,
+            "area_m2": area,
+            "original_length_m": original_length,
+            "change_in_length_m": change_in_length,
+            "stress_pa": stress,
+            "strain": strain,
+            "youngs_modulus_pa": youngs_modulus,
+            "factor_of_safety": factor_of_safety,
+            "is_safe": is_safe,
+        }
 
-def add_to_history(history: list[dict], record: dict) -> None:
-    history.append(record)
-
-
-def get_history(history: list[dict]) -> list[dict]:
-    return history
-
-def compute_all_properties(force: float, area: float, orig_len: float, dl: float, yield_strength: float) -> dict:
-    stress = calculate_stress(force, area)
-    strain = calculate_strain(dl, orig_len)
-    modulus = calculate_youngs_modulus(stress, strain)
-    fos = calculate_factor_of_safety(yield_strength, stress)
-    
-    return {
-        "stress": stress,
-        "strain": strain,
-        "modulus": modulus,
-        "fos": fos
-    }
-
-from dataclasses import dataclass
-
-@dataclass
-class Material:
-    name: str
-    yield_strength: float
-
-    def get_yield_strength_mpa(self) -> float:
-        return self.yield_strength / 1e6
-
-    def is_safe(self, applied_stress: float) -> bool:
-        return applied_stress < self.yield_strength
-
-from dataclasses import dataclass
-
-@dataclass
-class StressStrainTest:
-    material: Material
-    force: float
-    area: float
-    original_length: float
-    change_in_length: float
-
-    @property
-    def stress(self) -> float:
-        return self.force / self.area
-
-    @property
-    def strain(self) -> float:
-        return self.change_in_length / self.original_length
-
-    @property
-    def youngs_modulus(self) -> float:
-        return self.stress / self.strain if self.strain > 0 else 0.0
-
-    @property
-    def factor_of_safety(self) -> float:
-        return self.material.yield_strength / self.stress
-    
-from material import Material, StressStrainTest
-from database import add_to_history
-from utils import validate_positive_number, prompt_material_selection
-
-def main() -> None:
-    materials = [
-        {"name": "Structural Steel", "yield_strength": 250e6},
-        {"name": "Aluminum 6061-T6", "yield_strength": 276e6}
-    ]
-    history = []
-    
-    selected = prompt_material_selection(materials)
-    mat = Material(selected["name"], selected["yield_strength"])
-    
-    f = validate_positive_number("Enter Force (N): ", "Force")
-    a = validate_positive_number("Enter Area (m^2): ", "Area")
-    l0 = validate_positive_number("Enter Length (m): ", "Length")
-    dl = validate_positive_number("Enter Delta L (m): ", "Delta L")
-    
-    test = StressStrainTest(mat, f, a, l0, dl)
-    record = {
-        "material": test.material.name,
-        "stress": test.stress,
-        "strain": test.strain,
-        "modulus": test.youngs_modulus,
-        "fos": test.factor_of_safety
-    }
-    add_to_history(history, record)
-
-import json
-from pathlib import Path
-
-def save_history_to_json(history: list[dict], filepath: str = "history.json") -> None:
-    Path(filepath).write_text(json.dumps(history, indent=4))
-
-
-def load_history_from_json(filepath: str = "history.json") -> list[dict]:
-    path = Path(filepath)
-    if not path.exists():
-        return []
-    return json.loads(path.read_text())
+    except (ValueError, TypeError, ZeroDivisionError) as e:
+        print(f"Calculation Error: {e}")
+        return {"error": str(e)}
