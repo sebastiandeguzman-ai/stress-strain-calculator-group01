@@ -45,3 +45,20 @@ def validate_positive_number(prompt_text: str, param_name: str) -> float:
             return val
         except ValueError:
             print("Error: Invalid numeric input. Please try again.")
+
+def create_analysis_record(material_name: str, stress: float, strain: float, modulus: float, fos: float) -> dict:
+    return {
+        "material": material_name,
+        "stress_pa": stress,
+        "strain": strain,
+        "youngs_modulus_pa": modulus,
+        "factor_of_safety": fos
+    }
+
+
+def add_to_history(history: list[dict], record: dict) -> None:
+    history.append(record)
+
+
+def get_history(history: list[dict]) -> list[dict]:
+    return history
