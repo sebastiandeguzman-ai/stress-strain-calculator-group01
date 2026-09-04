@@ -1,2 +1,9 @@
-print("=== Stress and Strain Calculator ===")
+def main():
+
+    print("=== Stress and Strain Calculator ===")
     print()
+
+    force = float(input("Enter applied force(in Newtons): ").replace(",", ""))
+    area = float(input("Enter cross-sectional area(in square meters): ").replace(",", ""))
+    original_len = float(input("Enter length(in m): ").replace(",", ""))
+    change_len = float(input("Enter change in length(in m): ").replace(",", ""))
