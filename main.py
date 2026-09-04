@@ -93,3 +93,47 @@ def run_simulated_test(materials_db: dict, test_history: list):
     else:
         print("Invalid material choice.")
 
+import sys
+from database import (
+    get_predefined_materials,
+    save_results_json,
+    load_results_json,
+    export_results_csv,
+)
+from material import Material
+from properties import MaterialProperties
+from tests import StressStrainTest
+from utils import generate_simulated_test
+
+
+def main():
+    """Main application loop coordinating classes, database persistence, and CLI choices."""
+    materials_db = get_predefined_materials()
+    test_history = load_results_json(materials_db)
+
+    while True:
+        display_menu()
+        choice = input("Enter choice (1-7): ").strip()
+
+        if choice == "1":
+            run_new_test(materials_db, test_history)
+        elif choice == "2":
+            run_simulated_test(materials_db, test_history)
+        elif choice in ["3", "6"]:
+            handle_history_and_export(choice, test_history)
+        elif choice == "4":
+            save_results_json(test_history)
+            print("\nResults successfully saved to data/results.json")
+        elif choice == "5":
+            test_history = load_results_json(materials_db)
+            print(f"\nLoaded {len(test_history)} tests from data/results.json")
+        elif choice == "7":
+            save_results_json(test_history)
+            print("\nSaved test history. Goodbye!")
+            sys.exit(0)
+        else:
+            print("Invalid choice. Please enter a number from 1 to 7.")
+
+if __name__ == "__main__":
+    main()
+
