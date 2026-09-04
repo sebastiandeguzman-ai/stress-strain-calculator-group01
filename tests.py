@@ -140,3 +140,92 @@ class Composite(Material):
             f"{self.name} "
             f"({composite_type} composite, "
             f"Density: {self.properties.density} kg/m³)")
+
+@dataclass
+class TestResult:
+    material_name: str
+    stress: float
+    strain: float
+    youngs_modulus: Optional[float]
+    failed: bool
+
+class TestAnalysis:
+    def __init__(self):
+        self.tests: List[StressStrainTest] = []
+
+    def add_test(self, test: StressStrainTest):
+        if not isinstance(test, StressStrainTest):
+            raise TypeError("Only StressStrainTest objects can be added")
+
+        self.tests.append(test)
+
+    def get_results(self) -> List[TestResult]:
+        results = []
+        for test in self.tests:
+            results.append(
+                TestResult(
+                    material_name=test.material.name,
+                    stress=test.stress,
+                    strain=test.strain,
+                    youngs_modulus=test.youngs_modulus,
+                    failed=test.will_fail()))
+        return results
+
+    def compare_materials(self):
+        if not self.tests:
+            print("No tests available.")
+            return
+
+        print("\n----- MATERIAL COMPARISON -----")
+
+        for test in self.tests:
+            status = (
+                "FAILED"
+                if test.will_fail()
+                else "PASSED")
+            print(
+                f"{test.material.name}: "
+                f"Stress={test.stress:.2f} MPa | "
+                f"Yield Strength="
+                f"{test.material.properties.yield_strength:.2f} MPa | "
+                f"Status={status}")
+
+    def strongest_material(self) -> Optional[Material]:
+        if not self.tests:
+            return None
+
+        strongest_test = max(
+            self.tests,
+            key=lambda test:
+            test.material.properties.yield_strength)
+
+        return strongest_test.material
+
+    def summary_report(self):
+        if not self.tests:
+            print("No test results available.")
+            return
+
+        print("\n===== STRESS-STRAIN TEST REPORT =====")
+
+        for number, test in enumerate(self.tests, start=1):
+
+            print(f"\nTest {number}")
+            print(test)
+            print(
+                f"Typical Young's Modulus: "
+                f"{test.material.properties.typical_youngs_modulus:.2f} GPa")
+            print(
+                f"Result: "
+                f"{'FAILED' if test.will_fail() else 'PASSED'}")
+
+        strongest = self.strongest_material()
+
+        if strongest:
+            print("-" * 35)
+            print(
+                f"Strongest Material: {strongest.name}")
+            print(
+                f"Yield Strength: "
+                f"{strongest.properties.yield_strength:.2f} MPa")
+            print("-" * 35)
