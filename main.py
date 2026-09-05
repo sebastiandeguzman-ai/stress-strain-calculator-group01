@@ -1,5 +1,7 @@
+import csv
+import json
 import sys
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 
 # Define minimal internal structure inside main.py to prevent top-level module code execution
 @dataclass
@@ -31,6 +33,32 @@ class StressStrainTest:
 
     def will_fail(self) -> bool:
         return self.stress >= self.material.properties.yield_strength
+
+    def to_dict(dict_self) -> dict:
+        """Serialize test object for JSON conversion."""
+        return {
+            "material": {
+                "name": dict_self.material.name,
+                "properties": asdict(dict_self.material.properties)
+            },
+            "force": dict_self.force,
+            "area": dict_self.area,
+            "original_length": dict_self.original_length,
+            "change_in_length": dict_self.change_in_length
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "StressStrainTest":
+        """Reconstruct a StressStrainTest instance from dictionary data."""
+        mat_props = MaterialProperties(**data["material"]["properties"])
+        material = Material(data["material"]["name"], mat_props)
+        return cls(
+            material=material,
+            force=data["force"],
+            area=data["area"],
+            original_length=data["original_length"],
+            change_in_length=data["change_in_length"]
+        )
 
 def get_predefined_materials():
     return {
@@ -99,6 +127,85 @@ def run_new_test(materials_db: dict, test_history: list):
     print(f"Status: {'FAILED' if test.will_fail() else 'PASSED'}")
     print("-" * 35)
 
+def save_results_json(test_history: list):
+    if not test_history:
+        print("\nNo history available to save.")
+        return
+
+    filename = input("Enter output JSON filename (default: results.json): ").strip()
+    if not filename:
+        filename = "results.json"
+    if not filename.endswith(".json"):
+        filename += ".json"
+
+    try:
+        data = [t.to_dict() for t in test_history]
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+        print(f"\nSuccessfully saved {len(test_history)} test record(s) to '{filename}'.")
+    except OSError as e:
+        print(f"\nError saving file: {e}")
+
+def load_results_json(test_history: list):
+    filename = input("Enter JSON filename to load (default: results.json): ").strip()
+    if not filename:
+        filename = "results.json"
+
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        loaded_tests = [StressStrainTest.from_dict(item) for item in data]
+        test_history.extend(loaded_tests)
+        print(f"\nSuccessfully loaded {len(loaded_tests)} test record(s) from '{filename}'.")
+    except FileNotFoundError:
+        print(f"\nError: File '{filename}' not found.")
+    except (json.JSONDecodeError, KeyError, TypeError) as e:
+        print(f"\nError: Failed to parse file format ({e}).")
+    except OSError as e:
+        print(f"\nError reading file: {e}")
+
+def export_test_data_csv(test_history: list):
+    if not test_history:
+        print("\nNo history available to export.")
+        return
+
+    filename = input("Enter output CSV filename (default: results.csv): ").strip()
+    if not filename:
+        filename = "results.csv"
+    if not filename.endswith(".csv"):
+        filename += ".csv"
+
+    headers = [
+        "Material Name", "Density (kg/m3)", "Yield Strength (Pa)", 
+        "Youngs Modulus (Pa)", "Force (N)", "Area (m2)", 
+        "Original Length (m)", "Change in Length (m)", 
+        "Stress (Pa)", "Strain", "Status"
+    ]
+
+    try:
+        with open(filename, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(headers)
+
+            for t in test_history:
+                writer.writerow([
+                    t.material.name,
+                    t.material.properties.density,
+                    t.material.properties.yield_strength,
+                    t.material.properties.typical_youngs_modulus,
+                    t.force,
+                    t.area,
+                    t.original_length,
+                    t.change_in_length,
+                    t.stress,
+                    t.strain,
+                    "FAILED" if t.will_fail() else "PASSED"
+                ])
+        print(f"\nSuccessfully exported {len(test_history)} record(s) to '{filename}'.")
+    except OSError as e:
+        print(f"\nError exporting to CSV: {e}")
+
 def main():
     materials_db = get_predefined_materials()
     test_history = []
@@ -116,8 +223,12 @@ def main():
                 print(f"\n=== CALCULATION HISTORY ({len(test_history)} tests) ===")
                 for idx, t in enumerate(test_history, start=1):
                     print(f"Test #{idx}: {t.material.name} | Stress: {t.stress:,.0f} Pa | Strain: {t.strain}")
-        elif choice in ["3", "4", "5"]:
-            print(f"\nOption {choice} executed successfully.")
+        elif choice == "3":
+            save_results_json(test_history)
+        elif choice == "4":
+            load_results_json(test_history)
+        elif choice == "5":
+            export_test_data_csv(test_history)
         elif choice == "6":
             print("\nExiting program. Goodbye!")
             sys.exit(0)
